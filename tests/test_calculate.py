@@ -1,5 +1,4 @@
 import pytest
-
 from calculator_server import calculate, CalculationError
 
 
