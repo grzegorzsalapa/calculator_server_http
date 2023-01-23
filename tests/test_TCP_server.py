@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from calculator_server.TCP_server import main
+from calculator_server.HTTP_server import main
 
 
 def _mocked_connection(recv_value=None):
