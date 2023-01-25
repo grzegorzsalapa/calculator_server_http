@@ -17,13 +17,8 @@ class CalcDaemon(BaseHTTPRequestHandler):
         self._process_request()
 
     def _process_request(self):
-        print('\n' + self.requestline)
-        data_in = bytearray()
-
-        b_no = self.rfile.readinto(data_in)
-        # b_no = self.rfile.read()
-        print(data_in, b_no)
-
+        data_length = int(self.headers['Content-Length'])
+        data_in = self.rfile.read(data_length)
         json_in = data_in.decode(encoding='utf-8', errors='strict')
 
         request_in_process = Request()
@@ -31,11 +26,10 @@ class CalcDaemon(BaseHTTPRequestHandler):
         request_in_process.command = self.command
         request_in_process.path = self.path
         request_in_process.json_in = json_in
-        request_in_process.json_in = '{"expression":"2+2"}'
 
         _reach_resource_and_execute_request(request_in_process, self.resources)
-        data_out = bytes(request_in_process.json_out, 'utf-8')
 
+        data_out = bytes(request_in_process.json_out, 'utf-8')
         self.send_response(200)
         self.end_headers()
         self.wfile.write(data_out)
