@@ -17,12 +17,13 @@ class CalcDaemon(BaseHTTPRequestHandler):
         self._process_request()
 
     def _process_request(self):
-        # data_in = bytearray()
-        # b_no = self.rfile.readinto(data_in)
-        #
-        # print(data_in, b_no, self.path, self.command)
-        # json_in = data_in.decode(encoding='utf-8', errors='strict')
-        json_in = '{ "expression":"2+2"}'
+        data_in = bytearray()
+        b_no = self.rfile.readinto(data_in)
+
+        print(data_in, b_no)
+        json_in = data_in.decode(encoding='utf-8', errors='strict')
+
+        # json_in = '{ "expression":"2+2"}'
         expression = "2+2"
 
         request_in_process = Request()
