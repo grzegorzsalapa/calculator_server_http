@@ -1,5 +1,6 @@
 from http.server import HTTPServer
 from calculator_server.daemon import CalcDaemon
+from .daemon import Resources
 
 
 HOST = ''
@@ -15,7 +16,14 @@ def main():
         print("\rServer stopped manually.\n")
 
 
-def _run_server(server_class=HTTPServer, handler_class=CalcDaemon):
+class HTTPServerWithResources(HTTPServer):
+
+    def __init__(self, *args, **kwargs):
+        http_server_resources = Resources()
+        super().__init__(*args, **kwargs)
+
+
+def _run_server(server_class=HTTPServerWithResources, handler_class=CalcDaemon):
     httpd = None
 
     try:
