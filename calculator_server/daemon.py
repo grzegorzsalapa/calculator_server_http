@@ -36,6 +36,7 @@ class CalcDaemon(BaseHTTPRequestHandler):
 
         data_out = bytes(request_in_process.json_out, 'utf-8')
 
+
         self.send_response(200)
         self.end_headers()
         self.wfile.write(data_out)
