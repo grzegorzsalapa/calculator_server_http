@@ -9,7 +9,7 @@ def test_reaches_post_expression():
     test_request.client_address = ('', '')
     test_request.command = 'POST'
     test_request.path = '/calculations'
-    test_request.json_in = ''
+    test_request.json_in = '{"expression":"2+2"}'
     test_request.expression = '2+2'
 
     _reach_resource_and_execute_request(test_request, test_resource)
@@ -37,8 +37,8 @@ def test_reaches_get_expression_by_id():
         test_request.client_address = ('127.0.0.1', '')
         test_request.command = 'POST'
         test_request.path = '/calculations'
-        test_request.json_in = ''
-        test_request.expression = f'{arg} + {arg * 2}'
+        test_request.json_in = '{' + f'"expression":"{arg} + {arg * 2}"' + '}'
+        #test_request.expression = f'{arg} + {arg * 2}'
 
         _reach_resource_and_execute_request(test_request, test_resource)
 
@@ -69,7 +69,7 @@ def test_responds_with_correct_json_to_get_expression_by_id():
         test_request.client_address = ('127.0.0.2', '')
         test_request.command = 'POST'
         test_request.path = '/calculations'
-        test_request.json_in = ''
+        test_request.json_in = '{' + f'"expression":"{arg} + {arg * 2}"' + '}'
         test_request.expression = f'{arg} + {arg * 2}'
 
         _reach_resource_and_execute_request(test_request, test_resource)
@@ -103,7 +103,7 @@ def test_responds_with_correct_json_to_get_all_expressions():
         test_request.client_address = ('127.0.0.3', '')
         test_request.command = 'POST'
         test_request.path = '/calculations'
-        test_request.json_in = ''
+        test_request.json_in = '{' + f'"expression":"{arg} + {arg * 2}"' + '}'
         test_request.expression = f'{arg} + {arg * 2}'
 
         _reach_resource_and_execute_request(test_request, test_resource)
@@ -138,7 +138,7 @@ def test_all_request_reach_the_same_resources():
         test_request.client_address = (f'127.0.0.{addr}', '')
         test_request.command = 'POST'
         test_request.path = '/calculations'
-        test_request.json_in = ''
+        test_request.json_in = '{' + f'"expression":"{arg} + {arg * 2}"' + '}'
         test_request.expression = f'{arg} + {arg * 2}'
 
         print(test_request.client_address)

@@ -1,4 +1,5 @@
 from .calculate import calculate, CalculationError
+import re
 
 
 class Calculations:
@@ -9,7 +10,8 @@ class Calculations:
     def add_calculation(self, request):
         request.test_point = '1'
 
-        expression = request.expression
+        expression = _unpack_json(request.json_in)
+
         try:
             result = str(calculate(expression))
         except CalculationError as e:
@@ -62,3 +64,12 @@ def _pack_in_json(calculations):
     json += ']'
 
     return json
+
+
+def _unpack_json(json_in):
+    json = json_in
+    pattern = re.compile(r'\{"expression":"(.*?)"}')
+    m = pattern.match(json)
+    expression = m.group(1)
+
+    return expression
