@@ -11,6 +11,14 @@ class Calculations:
 
         request.test_point = '1'
 
+        if request.json_in == '':
+
+            request.code = 400
+            request.message = "Request missing json file."
+            request.json_out = ''
+
+            return
+
         try:
             expression = _unpack_json(request.json_in)
 
@@ -50,7 +58,7 @@ class Calculations:
         calculations = self.calculations[1][client_index]
 
         request.code = 302
-        request.message = "Returned requested calculation."
+        request.message = "Returned requested calculations."
         request.json_out = _pack_in_json(calculations)
 
     def get_calculation_by_id(self, request):
