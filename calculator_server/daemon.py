@@ -5,9 +5,10 @@ from .resources import Resources, ResourceNotFoundError
 
 class CalcDaemon(BaseHTTPRequestHandler):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, test_setup=False):
         self.resources = Resources()
-        super().__init__(*args, **kwargs)
+        if not test_setup:
+            super().__init__(*args)
 
     def do_POST(self):
         self._process_request()
