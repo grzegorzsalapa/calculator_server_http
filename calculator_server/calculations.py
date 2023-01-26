@@ -1,4 +1,5 @@
 from .calculate import calculate, CalculationError
+from .daemon import ResourceNotFoundError
 import re
 
 
@@ -34,7 +35,6 @@ class Calculations:
 
         client_ip, client_port = request.client_address
         client_index = self.calculations[0].index(client_ip)
-        print(client_index)
 
         calculations = self.calculations[1][client_index]
         request.calculations = calculations
@@ -44,14 +44,21 @@ class Calculations:
     def get_calculation_by_id(self, request):
         request.test_point = '3'
 
-        client_ip, client_port = request.client_address
-        client_index = self.calculations[0].index(client_ip)
-        print(client_index)
-        calculation_id = int(request.calculation_id) - 1
+        try:
+            client_ip, client_port = request.client_address
+            client_index = self.calculations[0].index(client_ip)
 
-        calculations = [self.calculations[1][client_index][calculation_id]]
-        request.calculations = calculations
+        except IndexError:
+            raise ResourceNotFoundError("No records for this client were found.")
 
+        try:
+            calculation_id = int(request.calculation_id) - 1
+            calculations = [self.calculations[1][client_index][calculation_id]]
+
+        except IndexError:
+            raise ResourceNotFoundError(f"Record with id: {request.calculation_id} does not exist.")
+
+        #request.calculations = calculations
         request.json_out = _pack_in_json(calculations)
 
 

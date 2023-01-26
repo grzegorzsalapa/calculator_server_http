@@ -1,10 +1,10 @@
 import pytest
-from calculator_server.daemon import Resources, Request, _reach_resource_and_execute_request
+from calculator_server.daemon import Resources, RequestMetadata, _reach_resource_and_execute_request
 
 
 def test_reaches_post_expression():
     test_resource = Resources()
-    test_request = Request()
+    test_request = RequestMetadata()
 
     test_request.client_address = ('', '')
     test_request.command = 'POST'
@@ -18,7 +18,7 @@ def test_reaches_post_expression():
 
 def test_reaches_get_all_expressions():
     test_resource = Resources()
-    test_request = Request()
+    test_request = RequestMetadata()
 
     test_request.client_address = ('', '')
     test_request.command = 'GET'
@@ -31,7 +31,7 @@ def test_reaches_get_all_expressions():
 
 def test_reaches_get_expression_by_id():
     test_resource = Resources()
-    test_request = Request()
+    test_request = RequestMetadata()
 
     def fill_in_resource_with_calculations(arg):
         test_request.client_address = ('127.0.0.1', '')
@@ -63,7 +63,7 @@ def test_reaches_get_expression_by_id():
 
 def test_responds_with_correct_json_to_get_expression_by_id():
     test_resource = Resources()
-    test_request = Request()
+    test_request = RequestMetadata()
 
     def fill_in_resource_with_calculations(arg):
         test_request.client_address = ('127.0.0.2', '')
@@ -97,7 +97,7 @@ def test_responds_with_correct_json_to_get_expression_by_id():
 
 def test_responds_with_correct_json_to_get_all_expressions():
     test_resource = Resources()
-    test_request = Request()
+    test_request = RequestMetadata()
 
     def fill_in_resource_with_calculations(arg):
         test_request.client_address = ('127.0.0.3', '')
@@ -132,7 +132,7 @@ def test_responds_with_correct_json_to_get_all_expressions():
 
 def test_all_request_reach_the_same_resources():
     test_resource = Resources()
-    test_request = Request()
+    test_request = RequestMetadata()
 
     def fill_in_resource_with_calculations(arg: int, addr: int):
         test_request.client_address = (f'127.0.0.{addr}', '')

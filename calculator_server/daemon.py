@@ -1,7 +1,12 @@
 from http.server import BaseHTTPRequestHandler
 import re
-import io
 from .calculations import Calculations
+
+
+class ResourceNotFoundError(Exception):
+
+    def __init__(self, message):
+        self.message = message
 
 
 class CalcDaemon(BaseHTTPRequestHandler):
@@ -21,16 +26,21 @@ class CalcDaemon(BaseHTTPRequestHandler):
         data_in = self.rfile.read(data_length)
         json_in = data_in.decode(encoding='utf-8', errors='strict')
 
-        request_in_process = Request()
+        request_in_process = RequestMetadata()
         request_in_process.client_address = self.client_address
         request_in_process.command = self.command
         request_in_process.path = self.path
         request_in_process.json_in = json_in
 
-        _reach_resource_and_execute_request(request_in_process, self.resources)
+        try:
+            _reach_resource_and_execute_request(request_in_process, self.resources)
+
+        except ResourceNotFoundError as e:
+            self.request_in_process.message = str(e)
+            self.request_code = 400
 
         data_out = bytes(request_in_process.json_out, 'utf-8')
-        self.send_response(200)
+        self.send_response(200, self.request_in_process.message)
         self.end_headers()
         self.wfile.write(data_out)
 
@@ -50,9 +60,11 @@ def _parse_path_and_command(request, resources):
         if m and command == resource[1]:
             request.calculation_id = m.group(1)
             return resource[2]
+    else:
+        raise ResourceNotFoundError("Resource you are trying to reach does not exist.")
 
 
-class Request:
+class RequestMetadata:
     pass
 
 
