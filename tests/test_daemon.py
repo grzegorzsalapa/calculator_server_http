@@ -1,5 +1,6 @@
 import pytest
-from calculator_server.daemon import Resources, RequestMetadata, _reach_resource_and_execute_request
+from calculator_server.daemon import RequestMetadata, _reach_resource_and_execute_request
+from calculator_server.resources import Resources
 
 
 def test_reaches_post_expression():
