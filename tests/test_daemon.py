@@ -27,7 +27,7 @@ def test_creates_resource_with_passed_expression():
     request_handler_mock.do_POST()
 
     request_handler_mock.send_response.assert_called_once_with(201, "Calculation added to record with id:1.")
-    request_handler_mock.wfile.write.assert_called_once_with(b'{"url":"/calculations/1"}')
+    request_handler_mock.wfile.write.assert_called_once_with(b'{"url": "/calculations/1"}')
 
 def test_responds_with_correct_json_to_get_expression_by_id():
 
@@ -43,7 +43,7 @@ def test_responds_with_correct_json_to_get_expression_by_id():
     request_handler_mock.do_POST()
 
     request_handler_mock.send_response.assert_called_once_with(302, "Returned requested calculation.")
-    request_handler_mock.wfile.write.assert_called_once_with(b'[{"id":"6", "expression":"5 + 10", "result":"15"},]')
+    request_handler_mock.wfile.write.assert_called_once_with(b'[{"id": "6", "expression": "5 + 10", "result": "15"}]')
 
 
 def test_responds_with_correct_json_to_get_all_expressions():
@@ -60,9 +60,9 @@ def test_responds_with_correct_json_to_get_all_expressions():
     request_handler_mock.do_POST()
 
     request_handler_mock.send_response.assert_called_once_with(302, "Returned requested calculations.")
-    request_handler_mock.wfile.write.assert_called_once_with(b'[{"id":"1", "expression":"0 + 0", "result":"0"},'
-                                                             b'{"id":"2", "expression":"1 + 2", "result":"3"},'
-                                                             b'{"id":"3", "expression":"2 + 4", "result":"6"},]')
+    request_handler_mock.wfile.write.assert_called_once_with(b'[{"id": "1", "expression": "0 + 0", "result": "0"}, '
+                                                             b'{"id": "2", "expression": "1 + 2", "result": "3"}, '
+                                                             b'{"id": "3", "expression": "2 + 4", "result": "6"}]')
 
 
 def test_handles_get_request_for_not_existing_resource_id():
@@ -106,7 +106,7 @@ def test_all_request_reach_the_same_resources():
     request_handler_mock.do_POST()
 
     request_handler_mock.send_response.assert_called_once_with(302, "Returned requested calculation.")
-    request_handler_mock.wfile.write.assert_called_once_with(b'[{"id":"2", "expression":"16 + 32", "result":"48"},]')
+    request_handler_mock.wfile.write.assert_called_once_with(b'[{"id": "2", "expression": "16 + 32", "result": "48"}]')
 
 
 def test_handles_missing_jason():

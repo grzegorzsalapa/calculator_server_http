@@ -1,5 +1,7 @@
 from .calculate import calculate, CalculationError
 import re
+import json
+from json import JSONDecodeError
 
 
 class Calculations:
@@ -20,7 +22,7 @@ class Calculations:
         try:
             expression = _unpack_json(request.json_in)
 
-        except AttributeError:
+        except (JSONDecodeError, KeyError) as e:
 
             request.code = 400
             request.message = "Invalid format of JSON file."
@@ -35,7 +37,7 @@ class Calculations:
 
         request.code = 201
         request.message = f"Calculation added to record with id:{calculation_id}."
-        request.json_out = '{"url":"' + f'/calculations/{calculation_id}' + '"}'
+        request.json_out = _pack_in_json({"url": f'/calculations/{calculation_id}'})
 
     def get_all_calculations(self, request):
 
@@ -52,10 +54,11 @@ class Calculations:
             return
 
         calculations = self.calculations[1][client_index]
+        payload = _pack_calculations(calculations)
 
         request.code = 302
         request.message = "Returned requested calculations."
-        request.json_out = _pack_in_json(calculations)
+        request.json_out = _pack_in_json(payload)
 
     def get_calculation_by_id(self, request):
 
@@ -83,9 +86,11 @@ class Calculations:
 
             return
 
+        payload = _pack_calculations(calculations)
+
         request.code = 302
         request.message = "Returned requested calculation."
-        request.json_out = _pack_in_json(calculations)
+        request.json_out = _pack_in_json(payload)
 
     def _find_client_or_create_new(self, request):
 
@@ -117,23 +122,27 @@ def _get_calc_result(expression):
     return result
 
 
-def _pack_in_json(calculations):
+def _pack_calculations(calculations):
 
-    json = '['
+    payload = []
     i = 1
     for tup in calculations:
-        json = json + '{' + f'"id":"{tup[0]}", "expression":"{tup[1]}", "result":"{tup[2]}"' + '},'
+        payload.append({'id': f'{tup[0]}', 'expression': f'{tup[1]}', 'result': f'{tup[2]}'})
         i += 1
-    json += ']'
 
-    return json
+    return payload
+
+def _pack_in_json(payload):
+
+    json_ = json.dumps(payload)
+
+    return json_
 
 
 def _unpack_json(json_in):
 
-    json = json_in
-    pattern = re.compile(r'\{"expression":"(.*?)"}')
-    m = pattern.match(json)
-    expression = m.group(1)
+    json_ = json_in
+    dict = json.loads(json_)
+    expression = dict['expression']
 
     return expression

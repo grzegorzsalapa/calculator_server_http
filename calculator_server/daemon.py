@@ -36,6 +36,7 @@ class CalcDaemon(BaseHTTPRequestHandler):
         except Exception as e:
             print(f"Unexpected error while handling {self.command} request from client: {self.client_address}")
             print(str(e), '\n')
+            raise
 
     def _collect_request_metadata(self):
 
