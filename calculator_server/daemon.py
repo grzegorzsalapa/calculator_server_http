@@ -20,7 +20,7 @@ class CalcDaemon(BaseHTTPRequestHandler):
 
         try:
             request_in_process = self._collect_request_metadata()
-            request_in_process.json_in = self._decode_json()
+            self._decode_json_from_binary_if_present(request_in_process)
 
             try:
                 _reach_resource_and_execute_request(request_in_process, self.resources)
@@ -46,18 +46,22 @@ class CalcDaemon(BaseHTTPRequestHandler):
         request_metadata.path = self.path
         return request_metadata
 
-    def _decode_json(self):
+    def _decode_json_from_binary_if_present(self, request):
 
-        data_length = int(self.headers['Content-Length'])
+        try:
+            data_length = int(self.headers['Content-Length'])
+
+        except TypeError:
+            return
+
         data_in = self.rfile.read(data_length)
-
-        return data_in.decode(encoding='utf-8', errors='strict')
+        request.json_in = data_in.decode(encoding='utf-8', errors='strict')
 
     def _send_response(self, request):
 
         self.send_response(request.code, request.message)
         self.end_headers()
-        b_data = _encode_json(request.json_out)
+        b_data = _encode_json_to_binary(request.json_out)
         self.wfile.write(b_data)
 
 
@@ -82,7 +86,7 @@ def _parse_path_and_command(request, resources):
         raise ResourceNotFoundError("Resource you are trying to reach does not exist.")
 
 
-def _encode_json(json):
+def _encode_json_to_binary(json):
 
     return bytes(json, 'utf-8')
 

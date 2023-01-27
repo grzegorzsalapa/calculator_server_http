@@ -78,7 +78,7 @@ def test_handles_get_request_for_not_existing_resource_id():
     request_handler_mock = _set_up_mocked_request_handler('127.0.0.5', '/calculations/15', 'GET', '')
     request_handler_mock.do_POST()
 
-    request_handler_mock.send_response.assert_called_once_with(204, "Record with id: 15 does not exist.")
+    request_handler_mock.send_response.assert_called_once_with(404, "Record with id: 15 does not exist.")
     request_handler_mock.wfile.write.assert_called_once_with(b'')
 
 

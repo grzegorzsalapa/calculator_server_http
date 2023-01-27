@@ -68,7 +68,7 @@ class Calculations:
 
         except ValueError:
 
-            request.code = 204
+            request.code = 404
             request.message = "No records were found."
             request.json_out = ''
 
@@ -80,7 +80,7 @@ class Calculations:
 
         except IndexError:
 
-            request.code = 204
+            request.code = 404
             request.message = f"Record with id: {request.calculation_id} does not exist."
             request.json_out = ''
 
