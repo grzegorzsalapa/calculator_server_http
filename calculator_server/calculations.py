@@ -9,8 +9,6 @@ class Calculations:
 
     def add_calculation(self, request):
 
-        request.test_point = '1'
-
         if request.json_in == '':
 
             request.code = 400
@@ -37,11 +35,9 @@ class Calculations:
 
         request.code = 201
         request.message = f"Calculation added to record with id:{calculation_id}."
-        request.json_out = ''
+        request.json_out = '{' + f'/calculations/{calculation_id}' + '}'
 
     def get_all_calculations(self, request):
-
-        request.test_point = '2'
 
         client_ip, client_port = request.client_address
         try:
@@ -62,8 +58,6 @@ class Calculations:
         request.json_out = _pack_in_json(calculations)
 
     def get_calculation_by_id(self, request):
-
-        request.test_point = '3'
 
         client_ip, client_port = request.client_address
         try:

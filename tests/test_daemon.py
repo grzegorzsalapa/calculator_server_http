@@ -1,7 +1,8 @@
 import pytest
 from unittest.mock import MagicMock
-from calculator_server.daemon import CalcDaemon
-
+from calculator_server.daemon import CalcDaemon, RequestMetadata, _parse_path_and_command, ResourceNotFoundError
+from calculator_server.resources import Resources
+from calculator_server.calculations import Calculations
 
 
 def _set_up_mocked_request_handler(ip_address: str, path: str, command: str, json: str):
@@ -26,7 +27,7 @@ def test_creates_resource_with_passed_expression():
     request_handler_mock.do_POST()
 
     request_handler_mock.send_response.assert_called_once_with(201, "Calculation added to record with id:1.")
-    request_handler_mock.wfile.write.assert_called_once_with(b'')
+    request_handler_mock.wfile.write.assert_called_once_with(b'{/calculations/1}')
 
 def test_responds_with_correct_json_to_get_expression_by_id():
 
@@ -139,3 +140,66 @@ def test_handles_request_on_invalid_endpoints():
 
     request_handler_mock.send_response.assert_called_once_with(400, "Resource you are trying to reach does not exist.")
     request_handler_mock.wfile.write.assert_called_once_with(b'')
+
+
+def test_parsing_of_request_path_and_command_post_calculation():
+
+    def test_prep():
+        resources = Resources()
+        request = RequestMetadata()
+        request.path = "/calculations"
+        request.command = "POST"
+
+        return request, resources
+
+    request, resources = test_prep()
+    result_method = _parse_path_and_command(request, resources)
+
+    assert result_method == Calculations.add_calculation
+
+def test_parsing_of_request_path_and_command_get_calculation_by_id():
+
+    def test_prep():
+        resources = Resources()
+        request = RequestMetadata()
+        request.path = "/calculations/3"
+        request.command = "GET"
+
+        return request, resources
+
+    request, resources = test_prep()
+    result_method = _parse_path_and_command(request, resources)
+
+    assert result_method == Calculations.get_calculation_by_id
+
+
+def test_parsing_of_request_path_and_command_get_all_calculations():
+
+    def test_prep():
+        resources = Resources()
+        request = RequestMetadata()
+        request.path = "/calculations"
+        request.command = "GET"
+
+        return request, resources
+
+    request, resources = test_prep()
+    result_method = _parse_path_and_command(request, resources)
+
+    assert result_method == Calculations.get_all_calculations
+
+
+def test_handles_invalid_path_and_command():
+
+    def test_prep():
+        resources = Resources()
+        request = RequestMetadata()
+        request.path = "/calculations/15"
+        request.command = "POST"
+
+        return request, resources
+
+    request, resources = test_prep()
+
+    with pytest.raises(ResourceNotFoundError, match='Resource you are trying to reach does not exist.'):
+        _parse_path_and_command(request, resources)
