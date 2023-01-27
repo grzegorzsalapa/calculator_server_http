@@ -27,7 +27,7 @@ def test_creates_resource_with_passed_expression():
     request_handler_mock.do_POST()
 
     request_handler_mock.send_response.assert_called_once_with(201, "Calculation added to record with id:1.")
-    request_handler_mock.wfile.write.assert_called_once_with(b'{/calculations/1}')
+    request_handler_mock.wfile.write.assert_called_once_with(b'{"url":"/calculations/1"}')
 
 def test_responds_with_correct_json_to_get_expression_by_id():
 

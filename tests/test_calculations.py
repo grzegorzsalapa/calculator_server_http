@@ -16,7 +16,7 @@ def test_expression_from_valid_json_is_added_to_calculations_record():
     request, calculations = test_prep()
     calculations.add_calculation(request)
 
-    assert request.json_out == "{/calculations/1}"
+    assert request.json_out == '{"url":"/calculations/1"}'
 
 
 def test_returns_all_calculations_of_given_client():

@@ -35,7 +35,7 @@ class Calculations:
 
         request.code = 201
         request.message = f"Calculation added to record with id:{calculation_id}."
-        request.json_out = '{' + f'/calculations/{calculation_id}' + '}'
+        request.json_out = '{"url":"' + f'/calculations/{calculation_id}' + '"}'
 
     def get_all_calculations(self, request):
 

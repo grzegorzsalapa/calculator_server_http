@@ -18,19 +18,24 @@ class CalcDaemon(BaseHTTPRequestHandler):
 
     def _process_request(self):
 
-        request_in_process = self._collect_request_metadata()
-        request_in_process.json_in = self._decode_json()
-
         try:
-            _reach_resource_and_execute_request(request_in_process, self.resources)
+            request_in_process = self._collect_request_metadata()
+            request_in_process.json_in = self._decode_json()
 
-        except ResourceNotFoundError as e:
+            try:
+                _reach_resource_and_execute_request(request_in_process, self.resources)
 
-            request_in_process.code = 400
-            request_in_process.message = str(e)
-            request_in_process.json_out = ''
+            except ResourceNotFoundError as e:
 
-        self._send_response(request_in_process)
+                request_in_process.code = 400
+                request_in_process.message = str(e)
+                request_in_process.json_out = ''
+
+            self._send_response(request_in_process)
+
+        except Exception as e:
+            print(f"Unexpected error while handling {self.command} request from client: {self.client_address}")
+            print(str(e), '\n')
 
     def _collect_request_metadata(self):
 
