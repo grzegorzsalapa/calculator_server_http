@@ -16,14 +16,7 @@ def main():
         print("\rServer stopped manually.\n")
 
 
-class HTTPServerWithResources(HTTPServer):
-
-    def __init__(self, *args, **kwargs):
-        http_server_resources = Resources()
-        super().__init__(*args, **kwargs)
-
-
-def _run_server(server_class=HTTPServerWithResources, handler_class=CalcDaemon):
+def _run_server(server_class=HTTPServer, handler_class=CalcDaemon):
     httpd = None
 
     try:
