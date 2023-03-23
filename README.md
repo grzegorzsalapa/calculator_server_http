@@ -1,6 +1,6 @@
 # Calculator server (http)
 
-Simple server based on standard http library calculating well-formed math equations. Intended to use with "
+Simple server based on standard http library, calculating well-formed math equations. Intended to use with "
 calculator_client_http".
 
 ## How to run
